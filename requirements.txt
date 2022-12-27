@@ -1,0 +1,11 @@
+# Requirements for the server
+aiohttp
+aioice
+aiortc
+av
+cryptography
+opencv-python
+
+# Requirements for the AI
+tensorflow
+mediapipe
