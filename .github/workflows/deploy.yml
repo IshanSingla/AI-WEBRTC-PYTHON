@@ -8,16 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  
-      - name: Testing WebRTC
-        run: docker-compose up -d 
+      - name: docker login
+        run: docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}} 
 
-      - name: Deploying WebRTC to VPS throw SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST_DNS }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            sudo docker-compose down
-            sudo docker rmi -f webrtc
-            sudo docker-compose up -d 
+      - name: Build the Docker image
+        run: docker build -t ${{secrets.DOCKER_USER}}/webrtcvps:$(date +%s) .
+
+      - name: Docker Push
+        run: docker push ${{secrets.DOCKER_USER}}/webrtcvps
+      # - name: Testing WebRTC
+      #   run: docker-compose up -d 
+
+      # - name: Deploying WebRTC to VPS throw SSH
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.HOST_DNS }}
+      #     username: ${{ secrets.USERNAME }}
+      #     key: ${{ secrets.EC2_SSH_KEY }}
+      #     script: |
+      #       sudo docker-compose down
+      #       sudo docker rmi -f webrtc
+      #       sudo docker-compose up -d 
